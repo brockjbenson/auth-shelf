@@ -24,8 +24,24 @@ router.get('/', rejectUnauthenticated, (req, res) => {
 /**
  * Add an item for the logged in user to the shelf
  */
-router.post('/', (req, res) => {
+router.post('/', rejectUnauthenticated, (req, res) => {
   // endpoint functionality
+  const { description, image_url } = req.body;
+
+  console.log(req.user);
+  const qText = `INSERT INTO "item" ("description", "image_url", "user_id")
+  VALUES ($1, $2, $3);`;
+  if (req.isAuthenticated()) {
+    pool
+      .query(qText, [description, image_url, req.user.id])
+      .then((results) => res.sendStatus(201))
+      .catch((error) => {
+        console.log('Error making INSERT for items:', error);
+        res.sendStatus(500);
+      });
+  } else {
+    res.sendStatus(403);
+  }
 });
 
 /**

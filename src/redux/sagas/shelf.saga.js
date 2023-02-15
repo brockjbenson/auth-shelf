@@ -11,8 +11,18 @@ function* fetchShelfSaga() {
     }
 }
 
+function* addShelfSaga(action) {
+    try {
+        yield axios.post('/api/shelf', action.payload);
+        yield put({ type: "FETCH_SHELF" });
+    } catch (err) {
+        console.log('post request failed', err);
+    }
+}
+
 function* shelfSaga() {
     yield takeLatest('FETCH_SHELF', fetchShelfSaga);
+    yield takeLatest('ADD_ITEM', addShelfSaga);
 }
 
 export default shelfSaga;
