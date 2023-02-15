@@ -14,4 +14,7 @@ CREATE TABLE "item" (
     "description" VARCHAR (80) NOT NULL,
     "image_url" VARCHAR (2083),
     "user_id" INT REFERENCES "user"
-);
+)
+
+INSERT INTO "item" ("description", "image_url", "user_id")
+VALUES ('this is a dog', 'https://www.shutterstock.com/image-photo/funny-dog-licking-lips-tongue-out-1761385949', 1);
