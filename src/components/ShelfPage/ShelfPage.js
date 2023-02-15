@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 function ShelfPage() {
   const items = useSelector(store => store.shelfReducer);
-  // const user = useSelector(store => store.userReducer);
+  const user = useSelector(store => store.user);
   const dispatch = useDispatch();
 
   // console.log(user.id);
@@ -17,10 +17,21 @@ function ShelfPage() {
     const newObj = {
       description: newDescription,
       image_url: newImage,
-      // user_id: user.id
     };
 
+
     dispatch({ type: "ADD_ITEM", payload: newObj });
+  };
+  console.log(user);
+
+  const deleteItem = (id, user_id) => {
+    if (user_id === user.id) {
+
+      dispatch({ type: "DELETE_ITEM", payload: id });
+    } else {
+      alert('You cannot delete this item');
+    }
+
   };
 
   useEffect(() => {
@@ -37,6 +48,7 @@ function ShelfPage() {
         <div key={index}>
           <p>{item.description}</p>
           <img src={item.image_url} />
+          <button onClick={() => deleteItem(item.id, item.user_id)}>Delete</button>
         </div>
       ))}
     </div>
