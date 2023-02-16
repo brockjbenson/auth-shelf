@@ -2,7 +2,8 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { useState } from 'react';
-
+import { Paper, Typography, Button } from '@mui/material';
+import { Box } from '@mui/system';
 function ShelfPage() {
   const items = useSelector(store => store.shelfReducer);
   const user = useSelector(store => store.user);
@@ -63,19 +64,37 @@ function ShelfPage() {
   }, []);
   return (
     <div className="container">
-      <h2>Shelf</h2>
-      <h3> {editable ? 'Edit Item' : 'Add New Item'}</h3>
-      <input placeholder="description" value={newDescription} onChange={(e) => setNewDescription(e.target.value)} />
-      <input placeholder="image url" value={newImage} onChange={(e) => setNewImage(e.target.value)} />
-      <button onClick={handleSubmit}>submit</button>
-      {items.map((item, index) => (
-        <div key={index}>
-          <p>{item.description}</p>
-          <img src={item.image_url} />
-          <button onClick={() => deleteItem(item.id, item.user_id)}>Delete</button>
-          <button onClick={() => editItem(item.id, item.user_id)}>Edit</button>
+      <section className='page-heading'>
+        <h2 className='shelf-title'>Shelf</h2>
+        <h3 className='shelf-h3'> {editable ? 'Edit Item' : 'Add New Item'}</h3>
+        <div className='shelf-form-container'>
+          <div className='shelf-inputs'>
+            <input placeholder="Description" value={newDescription} onChange={(e) => setNewDescription(e.target.value)} />
+            <input placeholder="Image URL" value={newImage} onChange={(e) => setNewImage(e.target.value)} />
+          </div>
+          <Button onClick={handleSubmit} variant="outlined">submit</Button>
         </div>
-      ))}
+      </section>
+      <Box className="items-container">
+        {items.map((item, index) => {
+          if (item.user_id === user.id) {
+            return (
+              <Paper key={index} variant="outlined" elevation={6} className="item-paper">
+                <Typography component={"p"} >{item.description}</Typography>
+                <img src={item.image_url} className="list-img" />
+                <h3><button class="logInButton" onClick={() => deleteItem(item.id, item.user_id)}>Delete</button>
+                  <button class="logInButton" onClick={() => editItem(item.id, item.user_id)}>Edit</button></h3>
+              </Paper>);
+          } else {
+            return (
+              <Paper key={index} elevation={20} className="item-paper">
+                <Typography>{item.description}</Typography>
+                <img src={item.image_url} className="list-img" />
+              </Paper>
+            );
+          }
+        })}
+      </Box>
     </div>
 
   );
