@@ -68,8 +68,23 @@ router.delete('/:id', rejectUnauthenticated, (req, res) => {
 /**
  * Update an item if it's something the logged in user added
  */
-router.put('/:id', (req, res) => {
+router.put('/:id', rejectUnauthenticated, (req, res) => {
   // endpoint functionality
+  const { description, image_url } = req.body;
+  console.log('in put route');
+  const qText = `UPDATE "item" SET "description" = $1, "image_url" = $2 WHERE "id" = $3 AND "user_id" = $4;`;
+  if (req.isAuthenticated()) {
+    pool
+      .query(qText, [description, image_url, req.params.id, req.user.id])
+      .then(response => {
+        res.sendStatus(204);
+      })
+      .catch(err => {
+        res.sendStatus(500);
+      });
+  } else {
+    res.sendStatus(403);
+  }
 });
 
 /**
